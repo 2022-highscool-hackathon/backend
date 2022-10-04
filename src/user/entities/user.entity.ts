@@ -1,9 +1,9 @@
-import { Entity, Column, PrimaryColumn } from 'typeorm';
+import { Entity, Column, PrimaryColumn, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity('user')
 export class UserEntity {
     
-    @PrimaryColumn({unsigned: true})
+    @PrimaryGeneratedColumn('increment')
     usercode: number;
 
     @Column({
@@ -19,8 +19,9 @@ export class UserEntity {
     email: string;
 
     @Column({
-        length: 20,
+        length: 200,
         nullable: false
     })
     password: string;
+    
 }
