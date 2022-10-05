@@ -2,7 +2,7 @@ import { Injectable, NotFoundException, NotAcceptableException } from '@nestjs/c
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreateUserDTO } from './dto/request/create-user.dto';
-import { UserEntity, UserRole } from './entities/user.entity';
+import { UserEntity, UserRole, UserSex } from './entities/user.entity';
 import * as bcrypt from 'bcrypt';
 import { LoginDTO } from './dto/request/login.dto';
 import { AuthService } from 'src/auth/auth.service';
@@ -11,6 +11,7 @@ import { ResumeEntity } from './entities/resume.entity';
 import { UpdateOlderDolbomiDTO } from './dto/request/dolbomi.dto';
 import { plainToClass } from '@nestjs/class-transformer';
 import { ViewAllElderDTO } from './dto/respones/view-all-elder.dto';
+import { ViewCareGiverDTO } from './dto/respones/view-caregiver.dto';
 
 @Injectable()
 export class UserService {
@@ -49,6 +50,8 @@ export class UserService {
     ) {
         const user = new UserEntity();
         user.nickname = dto.nickname;
+        user.role = dto.role;
+        user.sex = dto.sex;
         user.phone = dto.phone;
         user.password = dto.password;
         await this.userRepository.save(user);
@@ -127,5 +130,19 @@ export class UserService {
             ...elder
         }, {excludeExtraneousValues: true})); 
         return elders;
+    }
+
+    async ViewAllCaregivers() {
+        const caregivers: ViewCareGiverDTO[] = (await this.userRepository.findBy({role: UserRole.CAREGIVER})).map(caregiver => plainToClass(ViewCareGiverDTO, {
+            ...caregiver
+        }, {excludeExtraneousValues: true})); 
+        return caregivers;
+    }
+
+    async ViewFemaleCaregivers() {
+        const caregivers: ViewCareGiverDTO[] = (await this.userRepository.findBy({role: UserRole.CAREGIVER, sex: UserSex.FEMALE})).map(caregiver => plainToClass(ViewCareGiverDTO, {
+            ...caregiver
+        }, {excludeExtraneousValues: true})); 
+        return caregivers;
     }
 }
