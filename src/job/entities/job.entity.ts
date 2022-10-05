@@ -33,12 +33,6 @@ export class JobEntity {
     })
     province: string
 
-    // 모집 인원
-    @Column({
-        type: Number
-    })
-    InvtCnt: number
-
     @Column({
         type: "enum",
         enum: JobType,
@@ -59,7 +53,8 @@ export class JobEntity {
 
     @Column({
         length: 20,
-        nullable: false
+        nullable: false,
+        default: "모집 중"
     })
     state: string; 
 

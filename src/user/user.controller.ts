@@ -28,6 +28,8 @@ export class UserController {
     ) {
        return this.userservice.UploadResume(dto); 
     }
+
+    @Post('resume')
     
     @Get()
     @UseGuards(JwtAuthGuard)

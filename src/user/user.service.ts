@@ -15,8 +15,9 @@ export class UserService {
         @InjectRepository(UserEntity) private userRepository: Repository<UserEntity>,
         @InjectRepository(ResumeEntity) private resumeRepository: Repository<ResumeEntity>,
         private readonly authservice: AuthService
-    ) {}    
+    ) {}
 
+    // Todo:: Phone Unique설정
     async Register(dto: CreateUserDTO) {
         const { password } = dto;
         const hashedPassword = await this.HashPassword(password);
@@ -28,9 +29,9 @@ export class UserService {
     }
 
     private async getLastId() {
-        const user = await this.userRepository.find({ 
-            order: { usercode: "DESC" }, 
-            take: 1 
+        const user = await this.userRepository.find({
+            order: { usercode: "DESC" },
+            take: 1
         })
         return user[0].usercode;
     }
@@ -52,10 +53,10 @@ export class UserService {
 
     async login(dto: LoginDTO) {
         const { phone, password } = dto;
-        const user = await this.userRepository.findOneBy({phone: phone});
-        if (user === null) throw new NotFoundException("이메일을 찾을 수 없습니다.");
+        const user = await this.userRepository.findOneBy({ phone: phone });
+        if (user === null) throw new NotFoundException("휴대폰 번호를 찾을 수 없습니다.");
         const hashedPassword = user.password;
-        await this.verifyPassword(password, hashedPassword);      
+        await this.verifyPassword(password, hashedPassword);
         return this.authservice.getToken(phone, hashedPassword);
     }
 
@@ -71,7 +72,7 @@ export class UserService {
 
     async UploadResume(dto: UploadResumeDTO) {
         const { usercode } = dto;
-        const user = await this.userRepository.findBy({usercode: usercode});
+        const user = await this.userRepository.findBy({ usercode: usercode });
         if (user.length === 0) throw new NotFoundException("유저를 찾을 수 없습니다.")
         await this.saveResume(dto);
     }
@@ -97,7 +98,7 @@ export class UserService {
     }
 
     private async IsWriteResume(usercode: number) {
-        const resume = await this.resumeRepository.findBy({usercode: usercode});
+        const resume = await this.resumeRepository.findBy({ usercode: usercode });
         if (resume.length === 0) return false;
         else return true;
     }
