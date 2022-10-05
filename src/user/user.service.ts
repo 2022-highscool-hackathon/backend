@@ -9,7 +9,6 @@ import { AuthService } from 'src/auth/auth.service';
 import { UploadResumeDTO } from './dto/request/upload-resume.dto';
 import { ResumeEntity } from './entities/resume.entity';
 import { UpdateOlderDolbomiDTO } from './dto/request/dolbomi.dto';
-import { UploadJobDto } from 'src/job/dto/request/upload-job.dto';
 
 @Injectable()
 export class UserService {
