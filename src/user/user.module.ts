@@ -8,10 +8,11 @@ import { PassportModule } from '@nestjs/passport';
 import { JwtModule } from '@nestjs/jwt';
 import { AuthModule } from 'src/auth/auth.module';
 import { AuthService } from 'src/auth/auth.service';
+import { ResumeEntity } from './entities/resume.entity';
 
 @Module({
     imports: [
-        TypeOrmModule.forFeature([UserEntity]),
+        TypeOrmModule.forFeature([UserEntity, ResumeEntity]),
         ClassTransformer,
         AuthModule,
         PassportModule.register({ defaultStrategy: 'jwt', session: false }),

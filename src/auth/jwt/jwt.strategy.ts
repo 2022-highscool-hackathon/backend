@@ -1,12 +1,14 @@
 import { Inject, Injectable, UnauthorizedException, UnprocessableEntityException } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
-import { Payload } from './jwt.payload';
 import { Request } from 'express';
 import { JwtService } from '@nestjs/jwt';
 import { UserEntity } from 'src/user/entities/user.entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
+import { User } from './jwt.model';
+import { UserDto } from './dto/user.dto';
+import { plainToClass } from '@nestjs/class-transformer';
 
 const { SECRET_KEY } = process.env;
 
@@ -20,15 +22,26 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
             jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
             secretOrKey: SECRET_KEY,
             passReqToCallback: true,
+            ignoreExpiration: false,
         });
     }
 
-    async validate(payload: Payload) {
-        return payload;
+    async validate(payload: any) {
+        const token = await this.jwtService.verify(payload.rawHeaders[1].split(' ')[1], {
+            secret: SECRET_KEY,
+        });
+        if (token === undefined) {
+            throw new UnauthorizedException();
+        }
+        const user = await this.findByEmail(token.email);
+        return user;
     }
 
     private async findByEmail(email: string) {
-        const user = await this.userRepository.findOneBy({email: email});
-        return user;
+        const user: UserEntity = await this.userRepository.findOneBy({email: email});
+        const Todo: UserDto = plainToClass(UserDto, {
+            ...user
+        }, {excludeExtraneousValues: true});
+        return Todo;
     }
 }

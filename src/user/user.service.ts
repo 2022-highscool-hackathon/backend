@@ -6,22 +6,33 @@ import { UserEntity } from './entities/user.entity';
 import * as bcrypt from 'bcrypt';
 import { LoginDTO } from './dto/request/login.dto';
 import { AuthService } from 'src/auth/auth.service';
+import { UploadResumeDTO } from './dto/request/upload-resume.dto';
+import { ResumeEntity } from './entities/resume.entity';
 
 @Injectable()
 export class UserService {
     constructor(
         @InjectRepository(UserEntity) private userRepository: Repository<UserEntity>,
+        @InjectRepository(ResumeEntity) private resumeRepository: Repository<ResumeEntity>,
         private readonly authservice: AuthService
     ) {}    
 
-    async Register(dto: CreateUserDTO): Promise<string> {
+    async Register(dto: CreateUserDTO) {
         const { password } = dto;
         const hashedPassword = await this.HashPassword(password);
         await this.saveUser({
             ...dto,
             password: hashedPassword
         });
-        return "회원가입이 완료되었습니다."
+        return await this.getLastId();
+    }
+
+    private async getLastId() {
+        const user = await this.userRepository.find({ 
+            order: { usercode: "DESC" }, 
+            take: 1 
+        })
+        return user[0].usercode;
     }
 
     async HashPassword(password: string) {
@@ -56,6 +67,39 @@ export class UserService {
         if (!isPasswordMatching) {
             throw new NotAcceptableException("패스워드가 맞지 않습니다.");
         }
+    }
+
+    async UploadResume(dto: UploadResumeDTO) {
+        const { usercode } = dto;
+        const user = await this.userRepository.findBy({usercode: usercode});
+        if (user.length === 0) throw new NotFoundException("유저를 찾을 수 없습니다.")
+        await this.saveResume(dto);
+    }
+
+    private async saveResume(
+        dto: UploadResumeDTO
+    ) {
+        const { usercode, wanted, work } = dto;
+
+        if (await this.IsWriteResume(usercode)) {
+            this.resumeRepository.createQueryBuilder()
+                .update(ResumeEntity)
+                .set({ wanted: wanted, work: work })
+                .where("usercode = :usercode", { usercode: usercode })
+                .execute()
+        } else {
+            const resume = new ResumeEntity();
+            resume.usercode = usercode;
+            resume.wanted = wanted;
+            resume.work = work;
+            this.resumeRepository.save(resume);
+        }
+    }
+
+    private async IsWriteResume(usercode: number) {
+        const resume = await this.resumeRepository.findBy({usercode: usercode});
+        if (resume.length === 0) return false;
+        else return true;
     }
 
 }

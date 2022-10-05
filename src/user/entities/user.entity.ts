@@ -23,7 +23,7 @@ export class UserEntity {
         type: "enum",
         enum: UserSex,
     })
-    sex: number;
+    sex: UserSex;
 
     @Column({
         type: "enum",
