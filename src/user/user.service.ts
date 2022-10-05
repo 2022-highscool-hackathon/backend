@@ -8,10 +8,11 @@ import { LoginDTO } from './dto/request/login.dto';
 import { AuthService } from 'src/auth/auth.service';
 import { UploadResumeDTO } from './dto/request/upload-resume.dto';
 import { ResumeEntity } from './entities/resume.entity';
-import { UpdateOlderDolbomiDTO } from './dto/request/dolbomi.dto';
+import { UpdateElderDolbomiDTO } from './dto/request/update-dolbomi.dto';
 import { plainToClass } from '@nestjs/class-transformer';
 import { ViewAllElderDTO } from './dto/respones/view-all-elder.dto';
 import { ViewCareGiverDTO } from './dto/respones/view-caregiver.dto';
+import { UpdateElderAgeDTO } from './dto/request/update-age.dto';
 
 @Injectable()
 export class UserService {
@@ -114,7 +115,7 @@ export class UserService {
         else return true;
     }
 
-    async UpdateOlderDolbomi(dto: UpdateOlderDolbomiDTO) {
+    async UpdateElderDolbomi(dto: UpdateElderDolbomiDTO) {
         const { usercode, dolbomi } = dto;
         if (!await this.IsVaildUser(usercode)) throw new NotFoundException("유저를 찾을 수 없습니다.");
         await this.userRepository.createQueryBuilder()
@@ -123,6 +124,16 @@ export class UserService {
             .where("usercode = :usercode", { usercode: usercode })
             .execute()
     }
+
+    async UpdateElderAge(dto: UpdateElderAgeDTO) {
+        const { usercode, age } = dto;
+        if (!await this.IsVaildUser(usercode)) throw new NotFoundException("유저를 찾을 수 없습니다.");
+        await this.userRepository.createQueryBuilder()
+            .update(UserEntity)
+            .set({ age: age })
+            .where("usercode = :usercode", { usercode: usercode })
+            .execute()
+    } 
 
     // Todo :: 나이 추가
     // Todo :: 주소 추가

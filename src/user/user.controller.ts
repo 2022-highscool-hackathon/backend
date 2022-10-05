@@ -3,11 +3,11 @@ import { GetUser } from 'src/auth/getUser.decorator';
 import { UserDto } from 'src/auth/jwt/dto/user.dto';
 import { JwtAuthGuard } from 'src/auth/jwt/jwt.guard';
 import { CreateUserDTO } from './dto/request/create-user.dto';
-import { UpdateOlderDolbomiDTO } from './dto/request/dolbomi.dto';
+import { UpdateElderDolbomiDTO } from './dto/request/update-dolbomi.dto';
 import { LoginDTO } from './dto/request/login.dto';
 import { UploadResumeDTO } from './dto/request/upload-resume.dto';
-import { UserEntity } from './entities/user.entity';
 import { UserService } from './user.service';
+import { UpdateElderAgeDTO } from './dto/request/update-age.dto';
 
 // Todo UseGuards로 권한관리하기
 @Controller('user')
@@ -26,9 +26,16 @@ export class UserController {
 
     @Post('dolbomi')
     uploadUserDolbomi(
-        @Body() dto: UpdateOlderDolbomiDTO
+        @Body() dto: UpdateElderDolbomiDTO
     ) {
-        return this.userservice.UpdateOlderDolbomi(dto);
+        return this.userservice.UpdateElderDolbomi(dto);
+    }
+
+    @Post('age')
+    uploadUserAge(
+        @Body() dto: UpdateElderAgeDTO
+    ) {
+        return this.userservice.UpdateElderAge(dto);
     }
 
     @Post('resume')

@@ -56,4 +56,10 @@ export class UserEntity {
     })
     dolbomi: boolean
 
+    @Column({
+        type: Number,
+        default: 0
+    })
+    age: number;
+    
 }

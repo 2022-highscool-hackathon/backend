@@ -1,12 +1,11 @@
 import { IsString, IsIn, IsNumber } from "class-validator";
 
-export class UpdateOlderDolbomiDTO {
+export class UpdateElderAgeDTO {
 
     @IsNumber()
     usercode: number;
 
-    @IsString()
-    @IsIn(['true', 'false'])
-    dolbomi: string;
+    @IsNumber()
+    age: number;
 
 }
