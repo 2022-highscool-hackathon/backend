@@ -1,7 +1,7 @@
 import { IsIn, IsNumber, IsString, IsUUID } from 'class-validator'
 import { BusinessType } from 'src/user/entities/resume.entity';
 
-export class UploadBoardDto {
+export class UploadBoardDTO {
 
     @IsUUID()
     jobcode: string;
