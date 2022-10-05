@@ -19,7 +19,7 @@ export class UserService {
         @InjectRepository(UserEntity) private userRepository: Repository<UserEntity>,
         @InjectRepository(ResumeEntity) private resumeRepository: Repository<ResumeEntity>,
         private readonly authservice: AuthService
-    ) {}
+    ) { }
 
     // Todo:: Phone Unique설정
     async Register(dto: CreateUserDTO) {
@@ -119,30 +119,31 @@ export class UserService {
         if (!await this.IsVaildUser(usercode)) throw new NotFoundException("유저를 찾을 수 없습니다.");
         await this.userRepository.createQueryBuilder()
             .update(UserEntity)
-            .set({ dolbomi: (dolbomi=='true'?true:false) })
+            .set({ dolbomi: (dolbomi == 'true' ? true : false) })
             .where("usercode = :usercode", { usercode: usercode })
             .execute()
     }
 
     // Todo :: 나이 추가
+    // Todo :: 주소 추가
     async ViewAllElders() {
-        const elders: ViewAllElderDTO[] = (await this.userRepository.findBy({role: UserRole.ELDER, dolbomi: true})).map(elder => plainToClass(ViewAllElderDTO, {
+        const elders: ViewAllElderDTO[] = (await this.userRepository.findBy({ role: UserRole.ELDER, dolbomi: true })).map(elder => plainToClass(ViewAllElderDTO, {
             ...elder
-        }, {excludeExtraneousValues: true})); 
+        }, { excludeExtraneousValues: true }));
         return elders;
     }
 
     async ViewAllCaregivers() {
-        const caregivers: ViewCareGiverDTO[] = (await this.userRepository.findBy({role: UserRole.CAREGIVER})).map(caregiver => plainToClass(ViewCareGiverDTO, {
+        const caregivers: ViewCareGiverDTO[] = (await this.userRepository.findBy({ role: UserRole.CAREGIVER })).map(caregiver => plainToClass(ViewCareGiverDTO, {
             ...caregiver
-        }, {excludeExtraneousValues: true})); 
+        }, { excludeExtraneousValues: true }));
         return caregivers;
     }
 
     async ViewFemaleCaregivers() {
-        const caregivers: ViewCareGiverDTO[] = (await this.userRepository.findBy({role: UserRole.CAREGIVER, sex: UserSex.FEMALE})).map(caregiver => plainToClass(ViewCareGiverDTO, {
+        const caregivers: ViewCareGiverDTO[] = (await this.userRepository.findBy({ role: UserRole.CAREGIVER, sex: UserSex.FEMALE })).map(caregiver => plainToClass(ViewCareGiverDTO, {
             ...caregiver
-        }, {excludeExtraneousValues: true})); 
+        }, { excludeExtraneousValues: true }));
         return caregivers;
     }
 }
