@@ -13,7 +13,7 @@ export class BoardEntity {
     @JoinColumn({name: 'jobcode'})
     job: JobEntity;
 
-    @Column({nullable: false})
+    @Column({type: 'uuid', length: 36})
     jobcode: string;
 
     @Column({
