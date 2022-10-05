@@ -2,7 +2,7 @@ import { Expose } from "@nestjs/class-transformer";
 import { UserRole, UserSex } from "src/user/entities/user.entity";
 
 export class UserDto {
-    
+
     @Expose()
     usercode: number;
 
@@ -16,6 +16,6 @@ export class UserDto {
     nickname: string;
 
     @Expose()
-    email: string;
+    phone: string;
 
 }

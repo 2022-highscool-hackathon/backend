@@ -1,5 +1,5 @@
 import { Transform } from 'class-transformer';
-import { IsEmail, IsIn, IsString, Matches, MaxLength, MinLength } from 'class-validator'
+import { IsIn, IsString, Matches, MaxLength, MinLength } from 'class-validator'
 import { UserRole, UserSex } from 'src/user/entities/user.entity';
 
 export class CreateUserDTO {
@@ -11,9 +11,8 @@ export class CreateUserDTO {
     nickname: string;
 
     @IsString()
-    @IsEmail()
-    @MaxLength(30)
-    email: string;
+    @MaxLength(12)
+    phone: string;
 
     @IsString()
     @Matches(/^[A-Za-z\d!@#$%^&*()]{8,30}$/)

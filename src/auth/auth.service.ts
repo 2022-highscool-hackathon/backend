@@ -7,8 +7,8 @@ const { SECRET_KEY } = process.env;
 export class AuthService {
     constructor(private jwtService: JwtService) { }
 
-    async getToken(email: string, password: string) {
-        const payload = { email: email, password: password};
+    async getToken(phone: string, password: string) {
+        const payload = { phone: phone, password: password};
 
         const token = this.jwtService.sign(payload, {
             secret: SECRET_KEY,

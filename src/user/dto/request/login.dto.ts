@@ -1,11 +1,10 @@
-import { IsEmail, IsString, Matches, MaxLength, MinLength } from 'class-validator'
+import { IsString, Matches, MaxLength, MinLength } from 'class-validator'
 
 export class LoginDTO {
 
     @IsString()
-    @IsEmail()
-    @MaxLength(30)
-    email: string;
+    @MaxLength(12)
+    phone: string;
 
     @IsString()
     @Matches(/^[A-Za-z\d!@#$%^&*()]{8,30}$/)

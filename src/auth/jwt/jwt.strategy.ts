@@ -33,12 +33,12 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
         if (token === undefined) {
             throw new UnauthorizedException();
         }
-        const user = await this.findByEmail(token.email);
+        const user = await this.findByPhone(token.phone);
         return user;
     }
 
-    private async findByEmail(email: string) {
-        const user: UserEntity = await this.userRepository.findOneBy({email: email});
+    private async findByPhone(phone: string) {
+        const user: UserEntity = await this.userRepository.findOneBy({phone: phone});
         const Todo: UserDto = plainToClass(UserDto, {
             ...user
         }, {excludeExtraneousValues: true});

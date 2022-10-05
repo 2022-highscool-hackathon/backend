@@ -45,18 +45,18 @@ export class UserService {
     ) {
         const user = new UserEntity();
         user.nickname = dto.nickname;
-        user.email = dto.email;
+        user.phone = dto.phone;
         user.password = dto.password;
         await this.userRepository.save(user);
     }
 
     async login(dto: LoginDTO) {
-        const { email, password } = dto;
-        const user = await this.userRepository.findOneBy({email: email});
+        const { phone, password } = dto;
+        const user = await this.userRepository.findOneBy({phone: phone});
         if (user === null) throw new NotFoundException("이메일을 찾을 수 없습니다.");
         const hashedPassword = user.password;
         await this.verifyPassword(password, hashedPassword);      
-        return this.authservice.getToken(email, hashedPassword);
+        return this.authservice.getToken(phone, hashedPassword);
     }
 
     private async verifyPassword(plainTextPassword: string, hashedPassword: string) {

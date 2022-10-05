@@ -39,10 +39,10 @@ export class UserEntity {
     nickname: string;
 
     @Column({
-        length: 320,
+        length: 20,
         nullable: false
     })
-    email: string;
+    phone: string;
 
     @Column({
         length: 200,
