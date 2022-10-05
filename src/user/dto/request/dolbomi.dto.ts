@@ -1,11 +1,12 @@
-import { IsNumber } from "class-validator";
+import { IsString, IsIn, IsNumber } from "class-validator";
 
-export class updateOlderDolbomiDTO {
+export class UpdateOlderDolbomiDTO {
 
     @IsNumber()
     usercode: number;
 
-    @IsNumber()
-    dolbomi: number;
+    @IsString()
+    @IsIn(['true', 'false'])
+    dolbomi: string;
 
 }

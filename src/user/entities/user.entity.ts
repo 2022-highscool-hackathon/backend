@@ -7,7 +7,7 @@ export enum UserSex {
 }
 
 export enum UserRole {
-    OLDER = "older",
+    ELDER = "elder",
     EMPLOYEE = "employee",
     CAREGIVER = "caregiver"
 }
@@ -28,7 +28,7 @@ export class UserEntity {
     @Column({
         type: "enum",
         enum: UserRole,
-        default: UserRole.OLDER
+        default: UserRole.ELDER
     })
     role: UserRole;
 
@@ -49,5 +49,11 @@ export class UserEntity {
         nullable: false
     })
     password: string;
-    
+
+    @Column({
+        type: Boolean,
+        default: false
+    })
+    dolbomi: boolean
+
 }

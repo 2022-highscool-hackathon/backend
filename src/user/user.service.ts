@@ -8,6 +8,7 @@ import { LoginDTO } from './dto/request/login.dto';
 import { AuthService } from 'src/auth/auth.service';
 import { UploadResumeDTO } from './dto/request/upload-resume.dto';
 import { ResumeEntity } from './entities/resume.entity';
+import { UpdateOlderDolbomiDTO } from './dto/request/dolbomi.dto';
 
 @Injectable()
 export class UserService {
@@ -81,7 +82,6 @@ export class UserService {
         dto: UploadResumeDTO
     ) {
         const { usercode, wanted, work } = dto;
-
         if (await this.IsWriteResume(usercode)) {
             this.resumeRepository.createQueryBuilder()
                 .update(ResumeEntity)
@@ -101,6 +101,22 @@ export class UserService {
         const resume = await this.resumeRepository.findBy({ usercode: usercode });
         if (resume.length === 0) return false;
         else return true;
+    }
+
+    private async IsVaildUser(usercode: number) {
+        const user = await this.userRepository.findBy({ usercode: usercode });
+        if (user.length === 0) return false;
+        else return true;
+    }
+
+    async UpdateOlderDolbomi(dto: UpdateOlderDolbomiDTO) {
+        const { usercode, dolbomi } = dto;
+        if (!await this.IsVaildUser(usercode)) throw new NotFoundException("유저를 찾을 수 없습니다.")
+        await this.userRepository.createQueryBuilder()
+            .update(UserEntity)
+            .set({ dolbomi: (dolbomi=='true'?true:false) })
+            .where("usercode = :usercode", { usercode: usercode })
+            .execute()
     }
 
 }
