@@ -1,6 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { plainToClass } from 'class-transformer';
+import { User } from 'src/auth/jwt/jwt.model';
 import { UserEntity } from 'src/user/entities/user.entity';
 import { Repository } from 'typeorm';
 import { UploadJobDto } from './dto/request/upload-job.dto';
@@ -35,7 +36,6 @@ export class JobService {
         queryParams += '&' + encodeURIComponent('numOfRows') + '=' + encodeURIComponent(numOfRows);
         await axios.get(url+queryParams)
             .then(function (response) {
-                // 성공 핸들링
                 // console.log(JSON.stringify(response.data.response.body.items.item));
                 Jobs = response.data.response.body.items.item.map(job => plainToClass(JobDto,
                     {
@@ -46,9 +46,6 @@ export class JobService {
                         workplace: job.workPlace
                     }, { excludeExtraneousValues: false }
                 ))
-                // console.log(Jobs);
-                // response.data.response.body.items.item.map(job => 
-                // {console.log(job)});
             })
             .catch(function (error) {
                 console.log(error);
@@ -77,5 +74,10 @@ export class JobService {
         job.name = name;
         job.adress = adress;
         await this.jobrepository.save(job);
+    }
+
+    async ViewMyUploadedJob(user: User) {
+        const { usercode } = user;
+        return await this.jobrepository.findBy({usercode: usercode});
     }
 }
