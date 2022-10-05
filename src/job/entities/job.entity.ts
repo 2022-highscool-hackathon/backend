@@ -25,20 +25,14 @@ export class JobEntity {
         length: 20,
         nullable: false
     })
-    city: string
+    adress: string
 
-    @Column({
-        length: 20,
-        nullable: false 
-    })
-    province: string
-
-    @Column({
-        type: "enum",
-        enum: JobType,
-        default: JobType.INTERN
-    })
-    type: JobType
+    // @Column({
+    //     type: "enum",
+    //     enum: JobType,
+    //     default: JobType.INTERN
+    // })
+    // type: JobType
 
     @Column({
         length: 20,
@@ -46,22 +40,22 @@ export class JobEntity {
     })
     name: string
 
-    @Column({
-        nullable: false
-    })
-    projYear: Date;
+    // @Column({
+    //     nullable: false
+    // })
+    // projYear: Date;
 
-    @Column({
-        length: 20,
-        nullable: false,
-        default: "모집 중"
-    })
-    state: string; 
+    // @Column({
+    //     length: 20,
+    //     nullable: false,
+    //     default: "모집 중"
+    // })
+    // state: string; 
 
-    @Column({
-        length: 20,
-        nullable: false
-    })
-    workplace: string; 
+    // @Column({
+    //     length: 20,
+    //     nullable: false
+    // })
+    // workplace: string; 
     
 }

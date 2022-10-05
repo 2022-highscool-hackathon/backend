@@ -9,6 +9,7 @@ import { AuthService } from 'src/auth/auth.service';
 import { UploadResumeDTO } from './dto/request/upload-resume.dto';
 import { ResumeEntity } from './entities/resume.entity';
 import { UpdateOlderDolbomiDTO } from './dto/request/dolbomi.dto';
+import { UploadJobDto } from 'src/job/dto/request/upload-job.dto';
 
 @Injectable()
 export class UserService {
@@ -111,12 +112,11 @@ export class UserService {
 
     async UpdateOlderDolbomi(dto: UpdateOlderDolbomiDTO) {
         const { usercode, dolbomi } = dto;
-        if (!await this.IsVaildUser(usercode)) throw new NotFoundException("유저를 찾을 수 없습니다.")
+        if (!await this.IsVaildUser(usercode)) throw new NotFoundException("유저를 찾을 수 없습니다.");
         await this.userRepository.createQueryBuilder()
             .update(UserEntity)
             .set({ dolbomi: (dolbomi=='true'?true:false) })
             .where("usercode = :usercode", { usercode: usercode })
             .execute()
     }
-
 }
