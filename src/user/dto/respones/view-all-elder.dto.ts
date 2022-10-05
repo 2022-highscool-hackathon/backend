@@ -7,6 +7,9 @@ export class ViewAllElderDTO {
     usercode: number;
 
     @Expose()
+    age: number;
+
+    @Expose()
     sex: UserSex;
 
     @Expose()
