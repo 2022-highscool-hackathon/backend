@@ -8,15 +8,15 @@ export enum UserSex {
 
 export enum UserRole {
     ELDER = "elder",
-    EMPLOYEE = "employee",
+    EMPLOYER = "employer",
     CAREGIVER = "caregiver"
 }
 
 @Entity('user')
 export class UserEntity {
-    
+
     @PrimaryGeneratedColumn('increment')
-    @PrimaryColumn({unsigned: true})
+    @PrimaryColumn({ unsigned: true })
     usercode: number;
 
     @Column({

@@ -16,16 +16,16 @@ export class BoardService {
         @InjectRepository(BoardEntity) private boardRepository: Repository<BoardEntity>,
         @InjectRepository(JobEntity) private jobRepository: Repository<JobEntity>,
         @InjectRepository(UserEntity) private userRepository: Repository<UserEntity>
-    ) {}
+    ) { }
 
     private async IsVailedJob(jobcode: string) {
-        const job = await this.jobRepository.findBy({jobcode: jobcode});
+        const job = await this.jobRepository.findBy({ jobcode: jobcode });
         console.log(job);
-        if (job.length === 0) throw new NotFoundException("일자리를 찾을 수 없습니다."); 
+        if (job.length === 0) throw new NotFoundException("일자리를 찾을 수 없습니다.");
     }
 
     async UploadBoard(dto: UploadBoardDTO) {
-        const { jobcode } = dto; 
+        const { jobcode } = dto;
         await this.IsVailedJob(jobcode);
         await this.SaveBoard(dto);
     }
@@ -55,21 +55,22 @@ export class BoardService {
         const board: BoardInfoDTO = plainToClass(BoardInfoDTO, {
             ...(await this.GetBoardInfo(boardcode)),
             ...(await this.GetPostUser(boardcode))
-        }, {excludeExtraneousValues: true})
+        }, { excludeExtraneousValues: true })
         return board;
     }
 
     private async GetBoardInfo(boardcode: number) {
-        const board = await this.boardRepository.findOneBy({boardcode: boardcode});
+        const board = await this.boardRepository.findOneBy({ boardcode: boardcode });
         if (board === null) throw new NotFoundException("구인 광고를 찾을 수 없습니다.");
         return board;
     }
 
     private async GetPostUser(boardcode: number) {
-        const board = await this.boardRepository.findOneBy({boardcode: boardcode});
+        // Todo::Query builder로 변경
+        const board = await this.boardRepository.findOneBy({ boardcode: boardcode });
         if (board === null) throw new NotFoundException("구인 광고를 찾을 수 없습니다.");
-        const job = await this.jobRepository.findOneBy({jobcode: board.jobcode});
-        const user = await this.userRepository.findOneBy({usercode: job.usercode});
+        const job = await this.jobRepository.findOneBy({ jobcode: board.jobcode });
+        const user = await this.userRepository.findOneBy({ usercode: job.usercode });
         return user
     }
 }

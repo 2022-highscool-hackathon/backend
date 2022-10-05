@@ -2,13 +2,15 @@ import { Injectable, NotFoundException, NotAcceptableException } from '@nestjs/c
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreateUserDTO } from './dto/request/create-user.dto';
-import { UserEntity } from './entities/user.entity';
+import { UserEntity, UserRole } from './entities/user.entity';
 import * as bcrypt from 'bcrypt';
 import { LoginDTO } from './dto/request/login.dto';
 import { AuthService } from 'src/auth/auth.service';
 import { UploadResumeDTO } from './dto/request/upload-resume.dto';
 import { ResumeEntity } from './entities/resume.entity';
 import { UpdateOlderDolbomiDTO } from './dto/request/dolbomi.dto';
+import { plainToClass } from '@nestjs/class-transformer';
+import { ViewAllElderDTO } from './dto/respones/view-all-elder.dto';
 
 @Injectable()
 export class UserService {
@@ -117,5 +119,13 @@ export class UserService {
             .set({ dolbomi: (dolbomi=='true'?true:false) })
             .where("usercode = :usercode", { usercode: usercode })
             .execute()
+    }
+
+    // Todo :: 나이 추가
+    async ViewAllElders() {
+        const elders: ViewAllElderDTO[] = (await this.userRepository.findBy({role: UserRole.ELDER, dolbomi: true})).map(elder => plainToClass(ViewAllElderDTO, {
+            ...elder
+        }, {excludeExtraneousValues: true})); 
+        return elders;
     }
 }

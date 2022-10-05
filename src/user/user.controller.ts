@@ -9,6 +9,7 @@ import { UploadResumeDTO } from './dto/request/upload-resume.dto';
 import { UserEntity } from './entities/user.entity';
 import { UserService } from './user.service';
 
+// Todo UseGuards로 권한관리하기
 @Controller('user')
 export class UserController {
     constructor(private readonly userservice: UserService) { }
@@ -27,20 +28,26 @@ export class UserController {
     uploadUserDolbomi(
         @Body() dto: UpdateOlderDolbomiDTO
     ) {
-       return this.userservice.UpdateOlderDolbomi(dto); 
+        return this.userservice.UpdateOlderDolbomi(dto);
     }
-    
+
     @Post('resume')
     uploadResume(
         @Body() dto: UploadResumeDTO
     ) {
-       return this.userservice.UploadResume(dto); 
+        return this.userservice.UploadResume(dto);
     }
-    
+
     @Get()
     @UseGuards(JwtAuthGuard)
     getMyInfo(@GetUser() user: UserDto) {
         return user;
+    }
+
+    @Get('elders')
+    @UseGuards(JwtAuthGuard)
+    viewAllElders() {
+        return this.userservice.ViewAllElders();
     }
 
 }   

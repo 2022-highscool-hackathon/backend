@@ -17,16 +17,17 @@ export class JobService {
     constructor(
         @InjectRepository(UserEntity) private userRepository: Repository<UserEntity>,
         @InjectRepository(JobEntity) private jobrepository: Repository<JobEntity>
-    ) {}
+    ) { }
 
     async uploadJob() {
-        
+
     }
 
     async saveJob() {
 
     }
 
+    // Todo :: 받아올때까지 무한 요청
     async viewAllJob(dto: ViewJobDto) {
         const { numOfRows } = dto;
         let Jobs: JobDto;
@@ -34,7 +35,7 @@ export class JobService {
         const url = 'http://apis.data.go.kr/B552474/JobBsnInfoService/getJobBsnRecruitList';
         let queryParams = '?' + encodeURIComponent('serviceKey') + '=' + SERVICE_KEY;
         queryParams += '&' + encodeURIComponent('numOfRows') + '=' + encodeURIComponent(numOfRows);
-        await axios.get(url+queryParams)
+        await axios.get(url + queryParams)
             .then(function (response) {
                 // console.log(JSON.stringify(response.data.response.body.items.item));
                 Jobs = response.data.response.body.items.item.map(job => plainToClass(JobDto,
@@ -53,10 +54,9 @@ export class JobService {
         return Jobs;
     }
 
-    // Todo Caregiver 만 등록 가능
     async UploadJob(dto: UploadJobDto) {
-        const {registrationNumber, usercode} = dto;
-        // Todo:: 사업자 등록번호 유효한지 확인
+        const { registrationNumber, usercode } = dto;
+        // Todo :: 사업자 등록번호 유효한지 확인
         if (!await this.IsVaildUser(usercode)) throw new NotFoundException("유저를 찾을 수 없습니다.");
         await this.SaveJob(dto);
     }
@@ -68,7 +68,7 @@ export class JobService {
     }
 
     private async SaveJob(dto: UploadJobDto) {
-        const {usercode, name, adress} = dto;
+        const { usercode, name, adress } = dto;
         const job = new JobEntity();
         job.usercode = usercode;
         job.name = name;
@@ -78,6 +78,6 @@ export class JobService {
 
     async ViewMyUploadedJob(user: User) {
         const { usercode } = user;
-        return await this.jobrepository.findBy({usercode: usercode});
+        return await this.jobrepository.findBy({ usercode: usercode });
     }
 }
