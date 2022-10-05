@@ -1,7 +1,8 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { AppService } from './app.service';
 import { UserModule } from './user/user.module';
+import { AuthModule } from './auth/auth.module';
+import { JobModule } from './job/job.module';
 
 @Module({
   imports: [
@@ -16,8 +17,10 @@ import { UserModule } from './user/user.module';
       synchronize: true,
       logging: true,
       entities: [__dirname + '/**/entities/*.entity.{js,ts}']
-    }),],
+    }),
+    AuthModule,
+    JobModule,],
   controllers: [],
-  providers: [AppService],
+  providers: [],
 })
 export class AppModule { }
