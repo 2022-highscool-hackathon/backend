@@ -4,6 +4,9 @@ import { UserSex } from 'src/user/entities/user.entity';
 export class ViewCareGiverDTO {
 
     @Expose()
+    usercode: number;
+
+    @Expose()
     sex: UserSex;
 
     @Expose()

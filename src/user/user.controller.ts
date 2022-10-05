@@ -50,6 +50,18 @@ export class UserController {
         return this.userservice.ViewAllElders();
     }
 
+    @Get('elders/male')
+    @UseGuards(JwtAuthGuard)
+    viewMaleElders() {
+        return this.userservice.ViewMaleElders();
+    }
+
+    @Get('elders/female')
+    @UseGuards(JwtAuthGuard)
+    viewFemaleElders() {
+        return this.userservice.ViewFemaleElders();
+    }
+
     @Get('caregivers')
     @UseGuards(JwtAuthGuard)
     viewAllCaregivers() {
@@ -60,6 +72,12 @@ export class UserController {
     @UseGuards(JwtAuthGuard)
     viewFemaleCaregivers() {
         return this.userservice.ViewFemaleCaregivers();
+    }
+
+    @Get('caregivers/male')
+    @UseGuards(JwtAuthGuard)
+    viewMaleCaregivers() {
+        return this.userservice.ViewMaleCaregivers();
     }
 
 }   

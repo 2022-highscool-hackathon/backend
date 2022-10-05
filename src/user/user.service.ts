@@ -133,6 +133,20 @@ export class UserService {
         return elders;
     }
 
+    async ViewMaleElders() {
+        const elders: ViewAllElderDTO[] = (await this.userRepository.findBy({ role: UserRole.ELDER, dolbomi: true, sex: UserSex.MALE })).map(elder => plainToClass(ViewAllElderDTO, {
+            ...elder
+        }, { excludeExtraneousValues: true }));
+        return elders;
+    }
+
+    async ViewFemaleElders() {
+        const elders: ViewAllElderDTO[] = (await this.userRepository.findBy({ role: UserRole.ELDER, dolbomi: true, sex: UserSex.FEMALE })).map(elder => plainToClass(ViewAllElderDTO, {
+            ...elder
+        }, { excludeExtraneousValues: true }));
+        return elders;
+    }
+
     async ViewAllCaregivers() {
         const caregivers: ViewCareGiverDTO[] = (await this.userRepository.findBy({ role: UserRole.CAREGIVER })).map(caregiver => plainToClass(ViewCareGiverDTO, {
             ...caregiver
@@ -142,6 +156,13 @@ export class UserService {
 
     async ViewFemaleCaregivers() {
         const caregivers: ViewCareGiverDTO[] = (await this.userRepository.findBy({ role: UserRole.CAREGIVER, sex: UserSex.FEMALE })).map(caregiver => plainToClass(ViewCareGiverDTO, {
+            ...caregiver
+        }, { excludeExtraneousValues: true }));
+        return caregivers;
+    }
+
+    async ViewMaleCaregivers() {
+        const caregivers: ViewCareGiverDTO[] = (await this.userRepository.findBy({ role: UserRole.CAREGIVER, sex: UserSex.MALE })).map(caregiver => plainToClass(ViewCareGiverDTO, {
             ...caregiver
         }, { excludeExtraneousValues: true }));
         return caregivers;
