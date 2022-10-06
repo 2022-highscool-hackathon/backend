@@ -33,4 +33,32 @@ export class UploadBoardDTO {
     @IsNumber()
     hourlyWage: number;
 
+    @IsString()
+    @IsIn(['true', 'false'])
+    isMonday: string;
+
+    @IsString()
+    @IsIn(['true', 'false'])
+    isTuesday: string;
+
+    @IsString()
+    @IsIn(['true', 'false'])
+    isWednesday: string;
+
+    @IsString()
+    @IsIn(['true', 'false'])
+    isThursday: string;
+
+    @IsString()
+    @IsIn(['true', 'false'])
+    isFriday: string;
+
+    @IsString()
+    @IsIn(['true', 'false'])
+    isSaturday: string;
+
+    @IsString()
+    @IsIn(['true', 'false'])
+    isSunday: string;
+
 }

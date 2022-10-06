@@ -8,6 +8,7 @@ import { UploadBoardDTO } from './dto/request/upload-board.dto';
 import { ViewBoardInfoDTO } from './dto/request/view-board-info.dto';
 import { BoardInfoDTO } from './dto/respond/board-info.dto';
 import { BoardEntity } from './entities/board.entity';
+import { JobDayEntity } from './entities/job-day.entity';
 
 @Injectable()
 export class BoardService {
@@ -15,7 +16,8 @@ export class BoardService {
     constructor(
         @InjectRepository(BoardEntity) private boardRepository: Repository<BoardEntity>,
         @InjectRepository(JobEntity) private jobRepository: Repository<JobEntity>,
-        @InjectRepository(UserEntity) private userRepository: Repository<UserEntity>
+        @InjectRepository(UserEntity) private userRepository: Repository<UserEntity>,
+        @InjectRepository(JobDayEntity) private jobDayRepository: Repository<JobDayEntity>
     ) { }
 
     private async IsVailedJob(jobcode: string) {
@@ -28,6 +30,8 @@ export class BoardService {
         const { jobcode } = dto;
         await this.IsVailedJob(jobcode);
         await this.SaveBoard(dto);
+        const boardcode = await this.getLastBoardId();
+        await this.SaveDay(boardcode, dto);
     }
 
     private async SaveBoard(dto: UploadBoardDTO) {
@@ -44,6 +48,28 @@ export class BoardService {
         board.endMinute = endMinute;
         board.hourlyWage = hourlyWage;
         await this.boardRepository.save(board);
+    }
+
+    private async getLastBoardId() {
+        const board = await this.boardRepository.find({
+            order: { boardcode: "DESC" },
+            take: 1
+        })
+        return board[0].boardcode;
+    }
+
+    private async SaveDay(boardcode: number, dto: UploadBoardDTO) {
+        const { isMonday, isTuesday, isWednesday, isThursday, isFriday, isSaturday, isSunday } = dto;
+        const day = new JobDayEntity();
+        day.boardcode = boardcode;
+        day.isMonday = (isMonday == 'true' ? true : false);
+        day.isTuesday = (isTuesday == 'true' ? true : false);
+        day.isWednesday = (isWednesday == 'true' ? true : false);
+        day.isThursday = (isThursday == 'true' ? true : false);
+        day.isFriday = (isFriday == 'true' ? true : false);
+        day.isSaturday = (isSaturday == 'true' ? true : false);
+        day.isSunday = (isSunday == 'true' ? true : false);
+        await this.jobDayRepository.save(day);
     }
 
     async ViewBoard() {
