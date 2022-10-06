@@ -1,4 +1,4 @@
-import { Body, Controller, Post, Get, UseGuards } from '@nestjs/common';
+import { Body, Controller, Post, Get, UseGuards, Put } from '@nestjs/common';
 import { GetUser } from 'src/auth/getUser.decorator';
 import { UserDto } from 'src/auth/jwt/dto/user.dto';
 import { JwtAuthGuard } from 'src/auth/jwt/jwt.guard';
@@ -24,14 +24,14 @@ export class UserController {
         return this.userservice.login(dto);
     }
 
-    @Post('dolbomi')
+    @Put('dolbomi')
     uploadUserDolbomi(
         @Body() dto: UpdateElderDolbomiDTO
     ) {
         return this.userservice.UpdateElderDolbomi(dto);
     }
 
-    @Post('age')
+    @Put('age')
     uploadUserAge(
         @Body() dto: UpdateElderAgeDTO
     ) {
