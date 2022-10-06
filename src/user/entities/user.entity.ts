@@ -61,5 +61,12 @@ export class UserEntity {
         default: 0
     })
     age: number;
+
+    @Column({
+        length: 50,
+        nullable: true,
+        default: "주소 등록 안함"
+    })
+    address: string;
     
 }

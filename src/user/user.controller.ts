@@ -15,6 +15,7 @@ import { ViewUserInfoDTO } from './dto/request/view-user-info.dto';
 import { UploadDayDTO } from './dto/request/upload-day.dto';
 import { UpdateTimeDTO } from './dto/request/update-time.dto';
 import { UpdateHistoryAndOtherDTO } from './dto/request/update-history-and-others.dto';
+import { UpdateAddressDTO } from './dto/request/update-address.dto';
 
 // Todo UseGuards로 권한관리하기
 @Controller('user')
@@ -62,6 +63,12 @@ export class UserController {
     @Put('history')
     uploadUserHistoryAndOther(@Body() dto: UpdateHistoryAndOtherDTO) {
         return this.userservice.UpdateUserHistoryAndOther(dto);
+    }
+
+    @Put('address')
+    @UseGuards(JwtAuthGuard)
+    updateAddress(@GetUser() user: User, @Body() dto: UpdateAddressDTO) {
+        return this.userservice.UpdateUserAddress(user, dto);
     }
 
     @Post('day')

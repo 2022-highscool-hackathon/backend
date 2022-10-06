@@ -24,6 +24,8 @@ import { UploadDayDTO } from './dto/request/upload-day.dto';
 import { UpdateTimeDTO } from './dto/request/update-time.dto';
 import { UpdateHistoryAndOtherDTO } from './dto/request/update-history-and-others.dto';
 import { ElderInfoDTO } from './dto/respones/elder-info.dto';
+import { UpdateAddressDTO } from './dto/request/update-address.dto';
+const axios = require('axios').default;
 
 @Injectable()
 export class UserService {
@@ -165,6 +167,31 @@ export class UserService {
         await this.elderInfoRepository.createQueryBuilder()
             .update(ElderInfoEntity)
             .set({ history: history, other: other })
+            .where("usercode = :usercode", { usercode: usercode })
+            .execute()
+    }
+
+    async UpdateUserAddress(user: User, dto: UpdateAddressDTO) {
+        const { x, y } = dto;
+        const { usercode } = user;
+        let config = {
+            method: 'get',
+            url: 'https://dapi.kakao.com/v2/local/geo/coord2regioncode.json?x=' + x + '&y=' + y,
+            headers: {
+                'Authorization': 'KakaoAK f5e345a8f9d1132783877bb6fa3e655c'
+            }
+        };
+        let address = "";
+        await axios(config)
+            .then((response) => {
+                address += response.data.documents[0].address_name;
+            })
+            .catch((error) => {
+                console.log(error);
+            });
+        await this.userRepository.createQueryBuilder()
+            .update(UserEntity)
+            .set({ address: address })
             .where("usercode = :usercode", { usercode: usercode })
             .execute()
     }
