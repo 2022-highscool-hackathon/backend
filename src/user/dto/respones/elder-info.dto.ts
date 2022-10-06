@@ -10,6 +10,9 @@ export class ElderInfoDTO {
     age: number;
 
     @Expose()
+    phone: string;
+
+    @Expose()
     sex: UserSex;
 
     @Expose()
