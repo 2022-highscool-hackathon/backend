@@ -80,7 +80,8 @@ export class BoardService {
         const { boardcode } = dto;
         const board: BoardInfoDTO = plainToClass(BoardInfoDTO, {
             ...(await this.GetBoardInfo(boardcode)),
-            ...(await this.GetPostUser(boardcode))
+            ...(await this.GetPostUser(boardcode)),
+            ...(await this.GetBoardDay(boardcode))
         }, { excludeExtraneousValues: true })
         return board;
     }
@@ -98,5 +99,11 @@ export class BoardService {
         const job = await this.jobRepository.findOneBy({ jobcode: board.jobcode });
         const user = await this.userRepository.findOneBy({ usercode: job.usercode });
         return user
+    }
+
+    private async GetBoardDay(boardcode: number) {
+        const day = await this.jobDayRepository.findOneBy({ boardcode: boardcode });
+        console.log(day);
+        return day;
     }
 }

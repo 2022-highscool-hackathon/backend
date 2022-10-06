@@ -35,5 +35,26 @@ export class BoardInfoDTO {
 
     @Expose()
     phone: string;
+
+    @Expose()
+    isMonday: Boolean;
+
+    @Expose()
+    isTuesday: Boolean;
+
+    @Expose()
+    isWednesday: Boolean;
+    
+    @Expose()
+    isThursday: Boolean;
+    
+    @Expose()
+    isFriday: Boolean;
+
+    @Expose()
+    isSaturday: Boolean;
+
+    @Expose()
+    isSunday: Boolean;
     
 }
