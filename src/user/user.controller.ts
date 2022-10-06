@@ -1,4 +1,4 @@
-import { Body, Controller, Post, Get, UseGuards, Put } from '@nestjs/common';
+import { Body, Controller, Post, Get, UseGuards, Put, Param } from '@nestjs/common';
 import { GetUser } from 'src/auth/getUser.decorator';
 import { UserDto } from 'src/auth/jwt/dto/user.dto';
 import { JwtAuthGuard } from 'src/auth/jwt/jwt.guard';
@@ -11,6 +11,7 @@ import { UpdateElderAgeDTO } from './dto/request/update-age.dto';
 import { MatchingElderDTO } from './dto/request/matching-elder.dto';
 import { User } from 'src/auth/jwt/jwt.model';
 import { MatchingCaregiverDTO } from './dto/request/matching-caregiver.dto';
+import { ViewUserInfoDTO } from './dto/request/view-user-info.dto';
 
 // Todo UseGuards로 권한관리하기
 @Controller('user')
@@ -52,6 +53,11 @@ export class UserController {
     @UseGuards(JwtAuthGuard)
     getMyInfo(@GetUser() user: UserDto) {
         return user;
+    }
+
+    @Get(':usercode')
+    viewUserInfo(@Param() dto: ViewUserInfoDTO) {
+        return this.userservice.ViewUserInfo(dto);
     }
 
     @Get('elders')

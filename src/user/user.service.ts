@@ -17,6 +17,8 @@ import { User } from 'src/auth/jwt/jwt.model';
 import { MatchingElderDTO } from './dto/request/matching-elder.dto';
 import { MatchingCaregiverDTO } from './dto/request/matching-caregiver.dto';
 import { MatchingEntity } from './entities/matching.entity';
+import { ViewUserInfoDTO } from './dto/request/view-user-info.dto';
+import { UserInfoDTO } from './dto/respones/user-info.dto';
 
 @Injectable()
 export class UserService {
@@ -202,5 +204,14 @@ export class UserService {
         match.elder = usercode;
         match.caregiver = caregiverid;
         await this.matchingRepository.save(match);
+    }
+
+    async ViewUserInfo(dto: ViewUserInfoDTO) {
+        const { usercode } = dto;
+        if (!await this.IsVaildUser(usercode)) throw new NotFoundException("유저를 찾을 수 없습니다.");
+        const user: UserInfoDTO = plainToClass(UserInfoDTO, {
+            ...await this.userRepository.findOneBy({usercode: usercode})
+        }, {excludeExtraneousValues: true});
+        return user; 
     }
 }
