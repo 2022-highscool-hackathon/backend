@@ -12,6 +12,9 @@ import { MatchingElderDTO } from './dto/request/matching-elder.dto';
 import { User } from 'src/auth/jwt/jwt.model';
 import { MatchingCaregiverDTO } from './dto/request/matching-caregiver.dto';
 import { ViewUserInfoDTO } from './dto/request/view-user-info.dto';
+import { UploadDayDTO } from './dto/request/upload-day.dto';
+import { UpdateTimeDTO } from './dto/request/update-time.dto';
+import { UpdateHistoryAndOtherDTO } from './dto/request/update-history-and-others.dto';
 
 // Todo UseGuards로 권한관리하기
 @Controller('user')
@@ -42,11 +45,30 @@ export class UserController {
         return this.userservice.UpdateElderAge(dto);
     }
 
+    @Put('time')
+    uploadUserTime(
+        @Body() dto: UpdateTimeDTO
+    ) {
+        return this.userservice.UpdateElderTime(dto);
+    }
+
     @Post('resume')
     uploadResume(
         @Body() dto: UploadResumeDTO
     ) {
         return this.userservice.UploadResume(dto);
+    }
+
+    @Put('history')
+    uploadUserHistoryAndOther(@Body() dto: UpdateHistoryAndOtherDTO) {
+        return this.userservice.UpdateUserHistoryAndOther(dto);
+    }
+
+    @Post('day')
+    uploadDay(
+        @Body() dto: UploadDayDTO
+    ) {
+        return this.userservice.UploadDay(dto);
     }
 
     @Get()

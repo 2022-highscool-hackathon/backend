@@ -19,6 +19,10 @@ import { MatchingCaregiverDTO } from './dto/request/matching-caregiver.dto';
 import { MatchingEntity } from './entities/matching.entity';
 import { ViewUserInfoDTO } from './dto/request/view-user-info.dto';
 import { UserInfoDTO } from './dto/respones/user-info.dto';
+import { ElderInfoEntity } from './entities/elder-info.entity';
+import { UploadDayDTO } from './dto/request/upload-day.dto';
+import { UpdateTimeDTO } from './dto/request/update-time.dto';
+import { UpdateHistoryAndOtherDTO } from './dto/request/update-history-and-others.dto';
 
 @Injectable()
 export class UserService {
@@ -26,6 +30,7 @@ export class UserService {
         @InjectRepository(UserEntity) private userRepository: Repository<UserEntity>,
         @InjectRepository(ResumeEntity) private resumeRepository: Repository<ResumeEntity>,
         @InjectRepository(MatchingEntity) private matchingRepository: Repository<MatchingEntity>,
+        @InjectRepository(ElderInfoEntity) private elderInfoRepository: Repository<ElderInfoEntity>,
         private readonly authservice: AuthService
     ) { }
 
@@ -143,6 +148,26 @@ export class UserService {
             .execute()
     }
 
+    async UpdateElderTime(dto: UpdateTimeDTO) {
+        const { usercode, startHour, startMinute, endHour, endMinute } = dto;
+        if (!await this.IsVaildUser(usercode)) throw new NotFoundException("유저를 찾을 수 없습니다.");
+        await this.elderInfoRepository.createQueryBuilder()
+            .update(ElderInfoEntity)
+            .set({ startHour: startHour, endHour: endHour, startMinute: startMinute, endMinute: endMinute })
+            .where("usercode = :usercode", { usercode: usercode })
+            .execute()
+    }
+
+    async UpdateUserHistoryAndOther(dto: UpdateHistoryAndOtherDTO) {
+        const { usercode, history, other } = dto;
+        if (!await this.IsVaildUser(usercode)) throw new NotFoundException("유저를 찾을 수 없습니다.");
+        await this.elderInfoRepository.createQueryBuilder()
+            .update(ElderInfoEntity)
+            .set({ history: history, other: other })
+            .where("usercode = :usercode", { usercode: usercode })
+            .execute()
+    }
+
     async ViewAllElders(user: User) {
         const users = await this.userRepository.findBy({ role: UserRole.ELDER, dolbomi: true });
         const elders: ViewAllElderDTO[] = await Promise.all(users.map(async elder => plainToClass(ViewAllElderDTO, {
@@ -169,6 +194,8 @@ export class UserService {
         }, { excludeExtraneousValues: true })));
         return elders;
     }
+
+
 
     private async IsInCharge(user: User, elderid: number) {
         const { usercode } = user;
@@ -226,4 +253,25 @@ export class UserService {
         }, { excludeExtraneousValues: true });
         return user;
     }
+
+    async UploadDay(dto: UploadDayDTO) {
+        const { usercode } = dto;
+        if (!await this.IsVaildUser(usercode)) throw new NotFoundException("유저를 찾을 수 없습니다.");
+        await this.SaveDay(dto);
+    }
+
+    private async SaveDay(dto: UploadDayDTO) {
+        const { usercode, isMonday, isTuesday, isWednesday, isThursday, isFriday, isSaturday, isSunday } = dto;
+        const day = new ElderInfoEntity();
+        day.usercode = usercode;
+        day.isMonday = (isMonday == 'true' ? true : false);
+        day.isTuesday = (isTuesday == 'true' ? true : false);
+        day.isWednesday = (isWednesday == 'true' ? true : false);
+        day.isThursday = (isThursday == 'true' ? true : false);
+        day.isFriday = (isFriday == 'true' ? true : false);
+        day.isSaturday = (isSaturday == 'true' ? true : false);
+        day.isSunday = (isSunday == 'true' ? true : false);
+        await this.elderInfoRepository.save(day);
+    }
+
 }
