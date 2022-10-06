@@ -60,37 +60,37 @@ export class UserController {
         return this.userservice.ViewUserInfo(dto);
     }
 
-    @Get('elders')
+    @Get('view/elders')
     @UseGuards(JwtAuthGuard)
-    viewAllElders() {
-        return this.userservice.ViewAllElders();
+    viewAllElders(@GetUser() user: User) {
+        return this.userservice.ViewAllElders(user);
     }
 
-    @Get('elders/male')
+    @Get('view/elders/male')
     @UseGuards(JwtAuthGuard)
-    viewMaleElders() {
-        return this.userservice.ViewMaleElders();
+    viewMaleElders(@GetUser() user: User) {
+        return this.userservice.ViewMaleElders(user);
     }
 
-    @Get('elders/female')
+    @Get('view/elders/female')
     @UseGuards(JwtAuthGuard)
-    viewFemaleElders() {
-        return this.userservice.ViewFemaleElders();
+    viewFemaleElders(@GetUser() user: User) {
+        return this.userservice.ViewFemaleElders(user);
     }
 
-    @Get('caregivers')
+    @Get('view/caregivers')
     @UseGuards(JwtAuthGuard)
     viewAllCaregivers() {
         return this.userservice.ViewAllCaregivers();
     }
 
-    @Get('caregivers/female')
+    @Get('view/caregivers/female')
     @UseGuards(JwtAuthGuard)
     viewFemaleCaregivers() {
         return this.userservice.ViewFemaleCaregivers();
     }
 
-    @Get('caregivers/male')
+    @Get('view/caregivers/male')
     @UseGuards(JwtAuthGuard)
     viewMaleCaregivers() {
         return this.userservice.ViewMaleCaregivers();

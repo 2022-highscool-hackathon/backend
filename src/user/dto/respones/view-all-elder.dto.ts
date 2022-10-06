@@ -18,4 +18,7 @@ export class ViewAllElderDTO {
     @Expose()
     phone: string;
 
+    @Expose()
+    isInCharge: boolean;
+
 }

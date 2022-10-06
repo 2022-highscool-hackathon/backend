@@ -142,27 +142,38 @@ export class UserService {
             .execute()
     } 
 
-    // Todo :: 나이 추가
-    // Todo :: 주소 추가
-    async ViewAllElders() {
-        const elders: ViewAllElderDTO[] = (await this.userRepository.findBy({ role: UserRole.ELDER, dolbomi: true })).map(elder => plainToClass(ViewAllElderDTO, {
-            ...elder
-        }, { excludeExtraneousValues: true }));
+    async ViewAllElders(user: User) {
+        const users = await this.userRepository.findBy({ role: UserRole.ELDER, dolbomi: true });
+        const elders: ViewAllElderDTO[] = await Promise.all(users.map(async elder => plainToClass(ViewAllElderDTO, {
+            ...elder,
+            isInCharge: (await this.IsInCharge(user, elder.usercode))
+        }, { excludeExtraneousValues: true })));
         return elders;
     }
 
-    async ViewMaleElders() {
-        const elders: ViewAllElderDTO[] = (await this.userRepository.findBy({ role: UserRole.ELDER, dolbomi: true, sex: UserSex.MALE })).map(elder => plainToClass(ViewAllElderDTO, {
-            ...elder
-        }, { excludeExtraneousValues: true }));
+    async ViewMaleElders(user: User) {
+        const users = await this.userRepository.findBy({ role: UserRole.ELDER, dolbomi: true, sex: UserSex.MALE });
+        const elders: ViewAllElderDTO[] = await Promise.all(users.map(async elder => plainToClass(ViewAllElderDTO, {
+            ...elder,
+            isInCharge: (await this.IsInCharge(user, elder.usercode))
+        }, { excludeExtraneousValues: true })));
         return elders;
     }
 
-    async ViewFemaleElders() {
-        const elders: ViewAllElderDTO[] = (await this.userRepository.findBy({ role: UserRole.ELDER, dolbomi: true, sex: UserSex.FEMALE })).map(elder => plainToClass(ViewAllElderDTO, {
-            ...elder
-        }, { excludeExtraneousValues: true }));
+    async ViewFemaleElders(user: User) {
+        const users = await this.userRepository.findBy({ role: UserRole.ELDER, dolbomi: true, sex: UserSex.FEMALE });
+        const elders: ViewAllElderDTO[] = await Promise.all(users.map(async elder => plainToClass(ViewAllElderDTO, {
+            ...elder,
+            isInCharge: (await this.IsInCharge(user, elder.usercode))
+        }, { excludeExtraneousValues: true })));
         return elders;
+    }
+
+    private async IsInCharge(user: User, elderid: number) {
+        const { usercode } = user;
+        const match = await this.matchingRepository.findOneBy({caregiver: usercode, elder: elderid});
+        if (match === null) return false;
+        else return true; 
     }
 
     async ViewAllCaregivers() {
