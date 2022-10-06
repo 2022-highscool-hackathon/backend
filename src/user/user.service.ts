@@ -29,6 +29,7 @@ import { UpdateHistoryAndOtherDTO } from './dto/request/update-history-and-other
 import { ElderInfoDTO } from './dto/respones/elder-info.dto';
 import { UpdateAddressDTO } from './dto/request/update-address.dto';
 import { UserDto } from 'src/auth/jwt/dto/user.dto';
+import { MyInfoElderDTO } from './dto/respones/view-my-info/elder/my-info-elder.dto';
 const axios = require('axios').default;
 
 @Injectable()
@@ -321,12 +322,20 @@ export class UserService {
     }
 
     async ViewMyInfo(user: UserDto) {
-        switch(user.role) {
+        const { role, usercode } = user;
+        switch(role) {
             case "elder":
-                return;
+                const match = await this.matchingRepository.findOneBy({ elder: usercode })
+                const elder: MyInfoElderDTO = plainToClass(MyInfoElderDTO, {
+                    elder: await this.ViewElderInfo({usercode: usercode}),
+                    caregiver: match === null ? {} : await this.ViewUserInfo({usercode: match.caregiver})  
+                }, {excludeExtraneousValues: false})
+                return elder;
             case "employer":
+
                 return;
             case "caregiver":
+                
                 return;
         }
     }
