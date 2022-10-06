@@ -18,9 +18,14 @@
         daum.postcode.load(function () {
             new daum.Postcode({
                 oncomplete: function (data) {
-                    console.log(data);
+                    if(data.userSelectedType=="R"){
+                        window.Leaf.getAddress(data.zonecode, data.roadAddress, data.buildingName);
+                    }
+                    else{
+                        window.Leaf.getAddress(data.zonecode, data.jibunAddress, data.buildingName);
+                    }      
                 }
-            }).embed();
+            }).open();
         });
     </script>
     </iframe>
