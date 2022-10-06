@@ -4,6 +4,7 @@ import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
 import { JobModule } from './job/job.module';
 import { BoardModule } from './board/board.module';
+import { MapModule } from './map/map.module';
 
 @Module({
   imports: [
@@ -21,7 +22,8 @@ import { BoardModule } from './board/board.module';
     }),
     AuthModule,
     JobModule,
-    BoardModule,],
+    BoardModule,
+    MapModule,],
   controllers: [],
   providers: [],
 })

@@ -95,6 +95,7 @@ export class UserService {
         dto: UploadResumeDTO
     ) {
         const { usercode, wanted, work } = dto;
+        // create or update
         if (await this.IsWriteResume(usercode)) {
             this.resumeRepository.createQueryBuilder()
                 .update(ResumeEntity)
@@ -140,7 +141,7 @@ export class UserService {
             .set({ age: age })
             .where("usercode = :usercode", { usercode: usercode })
             .execute()
-    } 
+    }
 
     async ViewAllElders(user: User) {
         const users = await this.userRepository.findBy({ role: UserRole.ELDER, dolbomi: true });
@@ -171,9 +172,9 @@ export class UserService {
 
     private async IsInCharge(user: User, elderid: number) {
         const { usercode } = user;
-        const match = await this.matchingRepository.findOneBy({caregiver: usercode, elder: elderid});
+        const match = await this.matchingRepository.findOneBy({ caregiver: usercode, elder: elderid });
         if (match === null) return false;
-        else return true; 
+        else return true;
     }
 
     async ViewAllCaregivers() {
@@ -221,8 +222,8 @@ export class UserService {
         const { usercode } = dto;
         if (!await this.IsVaildUser(usercode)) throw new NotFoundException("유저를 찾을 수 없습니다.");
         const user: UserInfoDTO = plainToClass(UserInfoDTO, {
-            ...await this.userRepository.findOneBy({usercode: usercode})
-        }, {excludeExtraneousValues: true});
-        return user; 
+            ...await this.userRepository.findOneBy({ usercode: usercode })
+        }, { excludeExtraneousValues: true });
+        return user;
     }
 }

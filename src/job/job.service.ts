@@ -31,7 +31,6 @@ export class JobService {
     async viewAllJob(dto: ViewJobDto) {
         const { numOfRows } = dto;
         let Jobs: JobDto;
-        console.log(numOfRows);
         const url = 'http://apis.data.go.kr/B552474/JobBsnInfoService/getJobBsnRecruitList';
         let queryParams = '?' + encodeURIComponent('serviceKey') + '=' + SERVICE_KEY;
         queryParams += '&' + encodeURIComponent('numOfRows') + '=' + encodeURIComponent(numOfRows);
