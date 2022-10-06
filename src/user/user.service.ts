@@ -33,6 +33,8 @@ import { MyInfoElderDTO } from './dto/respones/view-my-info/elder/my-info-elder.
 import { MyInfoCareGiverDTO } from './dto/respones/view-my-info/caregiver/my-info-caregiver.dto';
 import { MyInfoEmployerDTO } from './dto/respones/view-my-info/employer/my-info-employer.dto';
 import { JobEntity } from 'src/job/entities/job.entity';
+import { BoardEntity } from 'src/board/entities/board.entity';
+import { BoardInfoDTO } from 'src/board/dto/respond/board-info.dto';
 const axios = require('axios').default;
 
 @Injectable()
@@ -43,6 +45,7 @@ export class UserService {
         @InjectRepository(JobEntity) private jobRepository: Repository<JobEntity>,
         @InjectRepository(MatchingEntity) private matchingRepository: Repository<MatchingEntity>,
         @InjectRepository(ElderInfoEntity) private elderInfoRepository: Repository<ElderInfoEntity>,
+        @InjectRepository(BoardEntity) private boardRepository: Repository<BoardEntity>,
         private readonly authservice: AuthService
     ) { }
 
@@ -337,14 +340,17 @@ export class UserService {
                 return elder;
             case "employer":
                 const job = await this.jobRepository.findOneBy({ usercode: usercode });
+                const boards = await this.boardRepository.findBy({ jobcode: job.jobcode });
                 const employer: MyInfoEmployerDTO = plainToClass(MyInfoEmployerDTO, {
                     employer: await this.ViewUserInfo({usercode: usercode}),
-                    job: job === null ? {} : job
+                    job: job === null ? {} : job,
+                    board: boards.map(board => plainToClass(BoardInfoDTO, {
+                        ...board
+                    }))
                 })
                 return employer;
             case "caregiver":
                 const matchByCaregiver = await this.matchingRepository.findBy({ caregiver: usercode });
-                console.log(matchByCaregiver);
                 const caregiver: MyInfoCareGiverDTO = plainToClass(MyInfoCareGiverDTO, {
                     caregiver: await this.ViewUserInfo({usercode: usercode}),
                     elder: await Promise.all(matchByCaregiver.map(async match => plainToClass(ElderInfoDTO, {   

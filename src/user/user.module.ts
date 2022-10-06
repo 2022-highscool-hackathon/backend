@@ -12,10 +12,11 @@ import { ResumeEntity } from './entities/resume.entity';
 import { MatchingEntity } from './entities/matching.entity';
 import { ElderInfoEntity } from './entities/elder-info.entity';
 import { JobEntity } from 'src/job/entities/job.entity';
+import { BoardEntity } from 'src/board/entities/board.entity';
 
 @Module({
     imports: [
-        TypeOrmModule.forFeature([UserEntity, ResumeEntity, MatchingEntity, ElderInfoEntity, JobEntity]),
+        TypeOrmModule.forFeature([UserEntity, ResumeEntity, MatchingEntity, ElderInfoEntity, JobEntity, BoardEntity]),
         ClassTransformer,
         AuthModule,
         PassportModule.register({ defaultStrategy: 'jwt', session: false }),

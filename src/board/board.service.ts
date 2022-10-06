@@ -98,7 +98,7 @@ export class BoardService {
         if (board === null) throw new NotFoundException("구인 광고를 찾을 수 없습니다.");
         const job = await this.jobRepository.findOneBy({ jobcode: board.jobcode });
         const user = await this.userRepository.findOneBy({ usercode: job.usercode });
-        return user
+        return user;
     }
 
     private async GetBoardDay(boardcode: number) {
