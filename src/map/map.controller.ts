@@ -1,5 +1,6 @@
-import { Controller, Param, Get, Render } from '@nestjs/common';
+import { Controller, Param, Get, Render, UseGuards } from '@nestjs/common';
 import { GetUser } from 'src/auth/getUser.decorator';
+import { JwtAuthGuard } from 'src/auth/jwt/jwt.guard';
 import { User } from 'src/auth/jwt/jwt.model';
 import { ViewNealyPositionByPositionDTO } from './dto/request/view-nearly-position-by-position.dto';
 import { ViewNealyPositionDTO } from './dto/request/view-nearly-position.dto';
@@ -20,6 +21,7 @@ export class MapController {
     }
 
     @Get()
+    @UseGuards(JwtAuthGuard)
     viewNearlyPositionByUser(@GetUser() user: User) {
         return this.mapservice.ViewNearlyPositionByUser(user); 
     }
@@ -27,7 +29,7 @@ export class MapController {
     @Get('find')
     @Render('index')
     root() {
-        return { message: 'Hello world!' };
+        return;
     }
 
 }

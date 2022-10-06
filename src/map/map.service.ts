@@ -1,30 +1,37 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
 import { ViewNealyPositionByPositionDTO } from './dto/request/view-nearly-position-by-position.dto';
 import { ViewNealyPositionDTO } from './dto/request/view-nearly-position.dto';
 import { User } from 'src/auth/jwt/jwt.model';
+import { JobEntity } from 'src/job/entities/job.entity';
+import { Repository } from 'typeorm';
 const axios = require('axios').default;
 
 @Injectable()
 export class MapService {
 
+    constructor(
+        @InjectRepository(JobEntity) private jobRepository: Repository<JobEntity>,
+    ) { }
+
     async ViewNearlyPosition(dto: ViewNealyPositionDTO) {
         const { city, province } = dto;
         let Jobs;
         const url = 'https://www.seniorro.or.kr:4431/seniorro/main/jobSearchAct02.do';
-        const payload = {sst01: city, sst02: province, projTypeList: ["A", "B", "C", "E"]}
+        const payload = { sst01: city, sst02: province, projTypeList: ["A", "B", "C", "E"] }
         await axios.post(url, payload)
-        .then(function (response) {
-            Jobs = response.data.map.instnList;
-        })
-        .catch(function (error) {
-            console.log(error);
-        });
+            .then(function (response) {
+                Jobs = response.data.map.instnList;
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
         const PositionJobs = await Promise.all(Jobs.map(async job => {
-        return ({
-            ...job,
-            x: (await this.getXY(job.rdAddr, true)),
-            y: (await this.getXY(job.rdAddr, false))
-        })
+            return ({
+                ...job,
+                x: (await this.getXY(job.rdAddr, true)),
+                y: (await this.getXY(job.rdAddr, false))
+            })
         }))
         return PositionJobs;
     }
@@ -34,7 +41,7 @@ export class MapService {
         let config = {
             method: 'get',
             url: `https://dapi.kakao.com/v2/local/search/address.json?query=${encodeURI(adress)}`,
-            headers: { 
+            headers: {
                 'Authorization': 'KakaoAK f5e345a8f9d1132783877bb6fa3e655c'
             }
         };
@@ -60,8 +67,8 @@ export class MapService {
         const { x, y } = dto;
         let config = {
             method: 'get',
-            url: 'https://dapi.kakao.com/v2/local/geo/coord2regioncode.json?x='+x+'&y='+y,
-            headers: { 
+            url: 'https://dapi.kakao.com/v2/local/geo/coord2regioncode.json?x=' + x + '&y=' + y,
+            headers: {
                 'Authorization': 'KakaoAK f5e345a8f9d1132783877bb6fa3e655c'
             }
         };
@@ -80,9 +87,17 @@ export class MapService {
             province: province
         })
     }
-    
+
     async ViewNearlyPositionByUser(user: User) {
-        
+        const { usercode } = user;
+        const job = await this.jobRepository.findOneBy({ usercode: usercode });
+        if ( job === null ) throw new NotFoundException("등록한 일자리가 존재하지 않습니다.")
+        // console.log(job.adress.split(' ')[0]);
+        // console.log(job.adress.split(' ')[1]);
+        return await this.ViewNearlyPosition({
+            city: job.adress.split(' ')[0],
+            province: job.adress.split(' ')[1]
+        })
     }
 
 }
