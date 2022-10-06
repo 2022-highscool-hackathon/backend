@@ -1,9 +1,11 @@
 import { Injectable } from '@nestjs/common';
+import { ViewNealyPositionByPositionDTO } from './dto/request/view-nearly-position-by-position.dto';
 import { ViewNealyPositionDTO } from './dto/request/view-nearly-position.dto';
 const axios = require('axios').default;
 
 @Injectable()
 export class MapService {
+
     async ViewNearlyPosition(dto: ViewNealyPositionDTO) {
         const { city, province } = dto;
         let Jobs;
@@ -51,5 +53,30 @@ export class MapService {
         } else {
             return y;
         }
+    }
+
+    async ViewNearlyPositionByPosition(dto: ViewNealyPositionByPositionDTO) {
+        const { x, y } = dto;
+        let config = {
+            method: 'get',
+            url: 'https://dapi.kakao.com/v2/local/geo/coord2regioncode.json?x='+x+'&y='+y,
+            headers: { 
+                'Authorization': 'KakaoAK f5e345a8f9d1132783877bb6fa3e655c'
+            }
+        };
+        let city = "";
+        let province = "";
+        await axios(config)
+            .then((response) => {
+                city += response.data.documents[0].region_1depth_name;
+                province += response.data.documents[0].region_2depth_name;
+            })
+            .catch((error) => {
+                console.log(error);
+            });
+        return await this.ViewNearlyPosition({
+            city: city,
+            province: province
+        })
     }
 }

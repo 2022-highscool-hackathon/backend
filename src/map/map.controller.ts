@@ -1,4 +1,5 @@
 import { Controller, Param, Get } from '@nestjs/common';
+import { ViewNealyPositionByPositionDTO } from './dto/request/view-nearly-position-by-position.dto';
 import { ViewNealyPositionDTO } from './dto/request/view-nearly-position.dto';
 import { MapService } from './map.service';
 
@@ -11,6 +12,9 @@ export class MapController {
         return this.mapservice.ViewNearlyPosition(dto);
     }
 
-    
+    @Get('position/:x/:y')
+    ViewNearlyPositionByPosition(@Param() dto: ViewNealyPositionByPositionDTO) {
+        return this.mapservice.ViewNearlyPositionByPosition(dto);
+    }
 
 }
