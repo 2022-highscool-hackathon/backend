@@ -8,6 +8,9 @@ import { LoginDTO } from './dto/request/login.dto';
 import { UploadResumeDTO } from './dto/request/upload-resume.dto';
 import { UserService } from './user.service';
 import { UpdateElderAgeDTO } from './dto/request/update-age.dto';
+import { MatchingElderDTO } from './dto/request/matching-elder.dto';
+import { User } from 'src/auth/jwt/jwt.model';
+import { MatchingCaregiverDTO } from './dto/request/matching-caregiver.dto';
 
 // Todo UseGuards로 권한관리하기
 @Controller('user')
@@ -85,6 +88,24 @@ export class UserController {
     @UseGuards(JwtAuthGuard)
     viewMaleCaregivers() {
         return this.userservice.ViewMaleCaregivers();
+    }
+
+    @Post('matching/elder')
+    @UseGuards(JwtAuthGuard)
+    matchingElder(
+        @GetUser() user: User,
+        @Body() dto: MatchingElderDTO
+    ) {
+        return this.userservice.MatchingElder(user, dto); 
+    }
+
+    @Post('matching/caregiver')
+    @UseGuards(JwtAuthGuard)
+    matchingCaregiver(
+        @GetUser() user: User,
+        @Body() dto: MatchingCaregiverDTO
+    ) {
+        return this.userservice.MatchingCaregiver(user, dto);
     }
 
 }   

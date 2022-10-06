@@ -13,12 +13,17 @@ import { plainToClass } from '@nestjs/class-transformer';
 import { ViewAllElderDTO } from './dto/respones/view-all-elder.dto';
 import { ViewCareGiverDTO } from './dto/respones/view-caregiver.dto';
 import { UpdateElderAgeDTO } from './dto/request/update-age.dto';
+import { User } from 'src/auth/jwt/jwt.model';
+import { MatchingElderDTO } from './dto/request/matching-elder.dto';
+import { MatchingCaregiverDTO } from './dto/request/matching-caregiver.dto';
+import { MatchingEntity } from './entities/matching.entity';
 
 @Injectable()
 export class UserService {
     constructor(
         @InjectRepository(UserEntity) private userRepository: Repository<UserEntity>,
         @InjectRepository(ResumeEntity) private resumeRepository: Repository<ResumeEntity>,
+        @InjectRepository(MatchingEntity) private matchingRepository: Repository<MatchingEntity>,
         private readonly authservice: AuthService
     ) { }
 
@@ -177,5 +182,25 @@ export class UserService {
             ...caregiver
         }, { excludeExtraneousValues: true }));
         return caregivers;
+    }
+
+    // Todo::elderid가 실제 elder인지 확인 
+    async MatchingElder(user: User, dto: MatchingElderDTO) {
+        const { usercode } = user;
+        const { elderid } = dto;
+        const match = new MatchingEntity();
+        match.caregiver = usercode;
+        match.elder = elderid;
+        await this.matchingRepository.save(match);
+    }
+
+    // Todo::caregiverid가 실제 caregiver인지 확인
+    async MatchingCaregiver(user: User, dto: MatchingCaregiverDTO) {
+        const { usercode } = user;
+        const { caregiverid } = dto;
+        const match = new MatchingEntity();
+        match.elder = usercode;
+        match.caregiver = caregiverid;
+        await this.matchingRepository.save(match);
     }
 }
