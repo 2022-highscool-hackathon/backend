@@ -340,6 +340,7 @@ export class UserService {
                 return elder;
             case "employer":
                 const job = await this.jobRepository.findOneBy({ usercode: usercode });
+                if (job === null) throw new NotAcceptableException('먼저 일자리를 만들어야 합니다.');
                 const boards = await this.boardRepository.findBy({ jobcode: job.jobcode });
                 const employer: MyInfoEmployerDTO = plainToClass(MyInfoEmployerDTO, {
                     employer: await this.ViewUserInfo({usercode: usercode}),
