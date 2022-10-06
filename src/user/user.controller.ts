@@ -82,6 +82,11 @@ export class UserController {
         return this.userservice.ViewUserInfo(dto);
     }
 
+    @Get('view/elder/:usercode')
+    viewElderInfo(@Param() dto: ViewUserInfoDTO) {
+        return this.userservice.ViewElderInfo(dto);
+    }
+
     @Get('view/elders')
     @UseGuards(JwtAuthGuard)
     viewAllElders(@GetUser() user: User) {

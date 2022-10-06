@@ -23,6 +23,7 @@ import { ElderInfoEntity } from './entities/elder-info.entity';
 import { UploadDayDTO } from './dto/request/upload-day.dto';
 import { UpdateTimeDTO } from './dto/request/update-time.dto';
 import { UpdateHistoryAndOtherDTO } from './dto/request/update-history-and-others.dto';
+import { ElderInfoDTO } from './dto/respones/elder-info.dto';
 
 @Injectable()
 export class UserService {
@@ -195,8 +196,6 @@ export class UserService {
         return elders;
     }
 
-
-
     private async IsInCharge(user: User, elderid: number) {
         const { usercode } = user;
         const match = await this.matchingRepository.findOneBy({ caregiver: usercode, elder: elderid });
@@ -250,6 +249,16 @@ export class UserService {
         if (!await this.IsVaildUser(usercode)) throw new NotFoundException("유저를 찾을 수 없습니다.");
         const user: UserInfoDTO = plainToClass(UserInfoDTO, {
             ...await this.userRepository.findOneBy({ usercode: usercode })
+        }, { excludeExtraneousValues: true });
+        return user;
+    }
+
+    async ViewElderInfo(dto: ViewUserInfoDTO) {
+        const { usercode } = dto;
+        if (!await this.IsVaildUser(usercode)) throw new NotFoundException("유저를 찾을 수 없습니다.");
+        const user: ElderInfoDTO = plainToClass(ElderInfoDTO, {
+            ...await this.userRepository.findOneBy({ usercode: usercode }),
+            ...await this.elderInfoRepository.findOneBy({ usercode: usercode })
         }, { excludeExtraneousValues: true });
         return user;
     }
