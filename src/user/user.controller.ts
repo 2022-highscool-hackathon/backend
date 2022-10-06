@@ -83,7 +83,7 @@ export class UserController {
 
     @Get()
     @UseGuards(JwtAuthGuard)
-    getMyInfo(@GetUser() user: UserDto) {
+    getMyInfo(@GetUser() user: User) {
         return this.userservice.ViewMyInfo(user);
     }
 

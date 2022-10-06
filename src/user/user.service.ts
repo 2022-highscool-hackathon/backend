@@ -30,6 +30,7 @@ import { ElderInfoDTO } from './dto/respones/elder-info.dto';
 import { UpdateAddressDTO } from './dto/request/update-address.dto';
 import { UserDto } from 'src/auth/jwt/dto/user.dto';
 import { MyInfoElderDTO } from './dto/respones/view-my-info/elder/my-info-elder.dto';
+import { MyInfoCareGiverDTO } from './dto/respones/view-my-info/caregiver/my-info-caregiver.dto';
 const axios = require('axios').default;
 
 @Injectable()
@@ -321,22 +322,29 @@ export class UserService {
         await this.elderInfoRepository.save(day);
     }
 
-    async ViewMyInfo(user: UserDto) {
+    async ViewMyInfo(user: User) {
         const { role, usercode } = user;
         switch(role) {
             case "elder":
-                const match = await this.matchingRepository.findOneBy({ elder: usercode })
+                const matchByElder = await this.matchingRepository.findOneBy({ elder: usercode })
                 const elder: MyInfoElderDTO = plainToClass(MyInfoElderDTO, {
                     elder: await this.ViewElderInfo({usercode: usercode}),
-                    caregiver: match === null ? {} : await this.ViewUserInfo({usercode: match.caregiver})  
+                    caregiver: matchByElder === null ? {} : await this.ViewUserInfo({usercode: matchByElder.caregiver})  
                 }, {excludeExtraneousValues: false})
                 return elder;
             case "employer":
-
-                return;
-            case "caregiver":
                 
                 return;
+            case "caregiver":
+                const matchByCaregiver = await this.matchingRepository.findBy({ caregiver: usercode });
+                console.log(matchByCaregiver);
+                const caregiver: MyInfoCareGiverDTO = plainToClass(MyInfoCareGiverDTO, {
+                    caregiver: await this.ViewUserInfo({usercode: usercode}),
+                    elder: await Promise.all(matchByCaregiver.map(async match => plainToClass(ElderInfoDTO, {   
+                        ...(await this.ViewElderInfo({usercode: match.elder}))
+                    })))
+                }, {excludeExtraneousValues: false})
+                return caregiver;
         }
     }
 

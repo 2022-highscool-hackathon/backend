@@ -39,9 +39,9 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
 
     private async findByPhone(phone: string) {
         const user: UserEntity = await this.userRepository.findOneBy({phone: phone});
-        const Todo: UserDto = plainToClass(UserDto, {
+        const dto: UserDto = plainToClass(UserDto, {
             ...user
         }, {excludeExtraneousValues: true});
-        return Todo;
+        return dto;
     }
 }
