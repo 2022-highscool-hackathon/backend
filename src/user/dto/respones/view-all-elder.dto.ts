@@ -21,4 +21,7 @@ export class ViewAllElderDTO {
     @Expose()
     isInCharge: boolean;
 
+    @Expose()
+    history: string;
+
 }

@@ -173,7 +173,8 @@ export class UserService {
         const users = await this.userRepository.findBy({ role: UserRole.ELDER, dolbomi: true });
         const elders: ViewAllElderDTO[] = await Promise.all(users.map(async elder => plainToClass(ViewAllElderDTO, {
             ...elder,
-            isInCharge: (await this.IsInCharge(user, elder.usercode))
+            isInCharge: (await this.IsInCharge(user, elder.usercode)),
+            history: (await this.GetElderHistory(elder.usercode))
         }, { excludeExtraneousValues: true })));
         return elders;
     }
@@ -182,7 +183,8 @@ export class UserService {
         const users = await this.userRepository.findBy({ role: UserRole.ELDER, dolbomi: true, sex: UserSex.MALE });
         const elders: ViewAllElderDTO[] = await Promise.all(users.map(async elder => plainToClass(ViewAllElderDTO, {
             ...elder,
-            isInCharge: (await this.IsInCharge(user, elder.usercode))
+            isInCharge: (await this.IsInCharge(user, elder.usercode)),
+            history: (await this.GetElderHistory(elder.usercode))
         }, { excludeExtraneousValues: true })));
         return elders;
     }
@@ -191,9 +193,15 @@ export class UserService {
         const users = await this.userRepository.findBy({ role: UserRole.ELDER, dolbomi: true, sex: UserSex.FEMALE });
         const elders: ViewAllElderDTO[] = await Promise.all(users.map(async elder => plainToClass(ViewAllElderDTO, {
             ...elder,
-            isInCharge: (await this.IsInCharge(user, elder.usercode))
+            isInCharge: (await this.IsInCharge(user, elder.usercode)),
+            history: (await this.GetElderHistory(elder.usercode))
         }, { excludeExtraneousValues: true })));
         return elders;
+    }
+
+    async GetElderHistory(usercode: number) {
+        const elder = await this.elderInfoRepository.findOneBy({usercode: usercode});
+        return elder.history;
     }
 
     private async IsInCharge(user: User, elderid: number) {
