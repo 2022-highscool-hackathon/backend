@@ -1,15 +1,18 @@
 import { Body, Controller, Post, Get, UseGuards, Put, Param } from '@nestjs/common';
-import { GetUser } from 'src/auth/getUser.decorator';
-import { UserDto } from 'src/auth/jwt/dto/user.dto';
+// GUARD
 import { JwtAuthGuard } from 'src/auth/jwt/jwt.guard';
+// USER
+import { UserService } from './user.service';
+import { GetUser } from 'src/auth/getUser.decorator';
+import { User } from 'src/auth/jwt/jwt.model';
+// DTO
+import { UserDto } from 'src/auth/jwt/dto/user.dto';
+import { LoginDTO } from './dto/request/login.dto';
 import { CreateUserDTO } from './dto/request/create-user.dto';
 import { UpdateElderDolbomiDTO } from './dto/request/update-dolbomi.dto';
-import { LoginDTO } from './dto/request/login.dto';
 import { UploadResumeDTO } from './dto/request/upload-resume.dto';
-import { UserService } from './user.service';
 import { UpdateElderAgeDTO } from './dto/request/update-age.dto';
 import { MatchingElderDTO } from './dto/request/matching-elder.dto';
-import { User } from 'src/auth/jwt/jwt.model';
 import { MatchingCaregiverDTO } from './dto/request/matching-caregiver.dto';
 import { ViewUserInfoDTO } from './dto/request/view-user-info.dto';
 import { UploadDayDTO } from './dto/request/upload-day.dto';
@@ -81,7 +84,7 @@ export class UserController {
     @Get()
     @UseGuards(JwtAuthGuard)
     getMyInfo(@GetUser() user: UserDto) {
-        return user;
+        return this.userservice.ViewMyInfo(user);
     }
 
     @Get(':usercode')

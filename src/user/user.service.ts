@@ -1,19 +1,21 @@
+// MODULE
 import { Injectable, NotFoundException, NotAcceptableException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreateUserDTO } from './dto/request/create-user.dto';
-import { UserEntity, UserRole, UserSex } from './entities/user.entity';
-import * as bcrypt from 'bcrypt';
-import { LoginDTO } from './dto/request/login.dto';
-import { AuthService } from 'src/auth/auth.service';
-import { UploadResumeDTO } from './dto/request/upload-resume.dto';
-import { ResumeEntity } from './entities/resume.entity';
-import { UpdateElderDolbomiDTO } from './dto/request/update-dolbomi.dto';
 import { plainToClass } from '@nestjs/class-transformer';
+import * as bcrypt from 'bcrypt';
+import { AuthService } from 'src/auth/auth.service';
+import { ResumeEntity } from './entities/resume.entity';
+// TYPE
+import { User } from 'src/auth/jwt/jwt.model';
+import { UserEntity, UserRole, UserSex } from './entities/user.entity';
+// DTO
+import { LoginDTO } from './dto/request/login.dto';
+import { UploadResumeDTO } from './dto/request/upload-resume.dto';
 import { ViewAllElderDTO } from './dto/respones/view-all-elder.dto';
 import { ViewCareGiverDTO } from './dto/respones/view-caregiver.dto';
 import { UpdateElderAgeDTO } from './dto/request/update-age.dto';
-import { User } from 'src/auth/jwt/jwt.model';
 import { MatchingElderDTO } from './dto/request/matching-elder.dto';
 import { MatchingCaregiverDTO } from './dto/request/matching-caregiver.dto';
 import { MatchingEntity } from './entities/matching.entity';
@@ -22,9 +24,11 @@ import { UserInfoDTO } from './dto/respones/user-info.dto';
 import { ElderInfoEntity } from './entities/elder-info.entity';
 import { UploadDayDTO } from './dto/request/upload-day.dto';
 import { UpdateTimeDTO } from './dto/request/update-time.dto';
+import { UpdateElderDolbomiDTO } from './dto/request/update-dolbomi.dto';
 import { UpdateHistoryAndOtherDTO } from './dto/request/update-history-and-others.dto';
 import { ElderInfoDTO } from './dto/respones/elder-info.dto';
 import { UpdateAddressDTO } from './dto/request/update-address.dto';
+import { UserDto } from 'src/auth/jwt/dto/user.dto';
 const axios = require('axios').default;
 
 @Injectable()
@@ -258,8 +262,7 @@ export class UserService {
         }, { excludeExtraneousValues: true }));
         return caregivers;
     }
-
-    // Todo::elderid가 실제 elder인지 확인 
+    
     async MatchingElder(user: User, dto: MatchingElderDTO) {
         const { usercode } = user;
         const { elderid } = dto;
@@ -269,7 +272,6 @@ export class UserService {
         await this.matchingRepository.save(match);
     }
 
-    // Todo::caregiverid가 실제 caregiver인지 확인
     async MatchingCaregiver(user: User, dto: MatchingCaregiverDTO) {
         const { usercode } = user;
         const { caregiverid } = dto;
@@ -316,6 +318,17 @@ export class UserService {
         day.isSaturday = (isSaturday == 'true' ? true : false);
         day.isSunday = (isSunday == 'true' ? true : false);
         await this.elderInfoRepository.save(day);
+    }
+
+    async ViewMyInfo(user: UserDto) {
+        switch(user.role) {
+            case "elder":
+                return;
+            case "employer":
+                return;
+            case "caregiver":
+                return;
+        }
     }
 
 }
