@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { ViewNealyPositionByPositionDTO } from './dto/request/view-nearly-position-by-position.dto';
 import { ViewNealyPositionDTO } from './dto/request/view-nearly-position.dto';
+import { User } from 'src/auth/jwt/jwt.model';
 const axios = require('axios').default;
 
 @Injectable()
@@ -79,4 +80,9 @@ export class MapService {
             province: province
         })
     }
+    
+    async ViewNearlyPositionByUser(user: User) {
+        
+    }
+
 }
