@@ -21,7 +21,7 @@ export class CreateUserDTO {
     @IsIn(["male", "female"])
     sex: UserSex
 
-    @IsIn(["elder", "employee", "caregiver"])
+    @IsIn(["elder", "employer", "caregiver"])
     role: UserRole
 
 }

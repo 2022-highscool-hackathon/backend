@@ -11,10 +11,11 @@ import { AuthService } from 'src/auth/auth.service';
 import { ResumeEntity } from './entities/resume.entity';
 import { MatchingEntity } from './entities/matching.entity';
 import { ElderInfoEntity } from './entities/elder-info.entity';
+import { JobEntity } from 'src/job/entities/job.entity';
 
 @Module({
     imports: [
-        TypeOrmModule.forFeature([UserEntity, ResumeEntity, MatchingEntity, ElderInfoEntity]),
+        TypeOrmModule.forFeature([UserEntity, ResumeEntity, MatchingEntity, ElderInfoEntity, JobEntity]),
         ClassTransformer,
         AuthModule,
         PassportModule.register({ defaultStrategy: 'jwt', session: false }),

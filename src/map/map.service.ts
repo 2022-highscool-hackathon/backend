@@ -92,8 +92,6 @@ export class MapService {
         const { usercode } = user;
         const job = await this.jobRepository.findOneBy({ usercode: usercode });
         if ( job === null ) throw new NotFoundException("등록한 일자리가 존재하지 않습니다.")
-        // console.log(job.adress.split(' ')[0]);
-        // console.log(job.adress.split(' ')[1]);
         return await this.ViewNearlyPosition({
             city: job.adress.split(' ')[0],
             province: job.adress.split(' ')[1]

@@ -31,6 +31,8 @@ import { UpdateAddressDTO } from './dto/request/update-address.dto';
 import { UserDto } from 'src/auth/jwt/dto/user.dto';
 import { MyInfoElderDTO } from './dto/respones/view-my-info/elder/my-info-elder.dto';
 import { MyInfoCareGiverDTO } from './dto/respones/view-my-info/caregiver/my-info-caregiver.dto';
+import { MyInfoEmployerDTO } from './dto/respones/view-my-info/employer/my-info-employer.dto';
+import { JobEntity } from 'src/job/entities/job.entity';
 const axios = require('axios').default;
 
 @Injectable()
@@ -38,6 +40,7 @@ export class UserService {
     constructor(
         @InjectRepository(UserEntity) private userRepository: Repository<UserEntity>,
         @InjectRepository(ResumeEntity) private resumeRepository: Repository<ResumeEntity>,
+        @InjectRepository(JobEntity) private jobRepository: Repository<JobEntity>,
         @InjectRepository(MatchingEntity) private matchingRepository: Repository<MatchingEntity>,
         @InjectRepository(ElderInfoEntity) private elderInfoRepository: Repository<ElderInfoEntity>,
         private readonly authservice: AuthService
@@ -333,8 +336,12 @@ export class UserService {
                 }, {excludeExtraneousValues: false})
                 return elder;
             case "employer":
-                
-                return;
+                const job = await this.jobRepository.findOneBy({ usercode: usercode });
+                const employer: MyInfoEmployerDTO = plainToClass(MyInfoEmployerDTO, {
+                    employer: await this.ViewUserInfo({usercode: usercode}),
+                    job: job === null ? {} : job
+                })
+                return employer;
             case "caregiver":
                 const matchByCaregiver = await this.matchingRepository.findBy({ caregiver: usercode });
                 console.log(matchByCaregiver);
